@@ -48,7 +48,7 @@ If a lot of similar titles are used it might be a good a idea to migrate the uni
 
 .. code-block:: sql
 
-   # temporary table
+   # create temporary table
    CREATE TABLE tx_realurl_uniqalias_migration LIKE tx_realurl_uniqalias;
    # copy
    INSERT INTO tx_realurl_uniqalias_migration SELECT * FROM tx_realurl_uniqalias WHERE tablename='tt_news';
@@ -56,8 +56,12 @@ If a lot of similar titles are used it might be a good a idea to migrate the uni
    UPDATE tx_realurl_uniqalias_migration SET value_id = (SELECT tx_news_domain_model_news.uid FROM `tx_news_domain_model_news` WHERE tx_news_domain_model_news.import_id=tx_realurl_uniqalias_migration.value_id),tablename='tx_news_domain_model_news' WHERE tablename='tt_news';
    # remove wrong alias (news which have not been imported)
    DELETE FROM tx_realurl_uniqalias_migration WHERE tablename='tx_news_domain_model_news' AND value_id=0;
-   # insert alias back into realurl table
+   # insert alias back into realurl table (EXT:realurl version 2.x)
+   INSERT INTO tx_realurl_uniqalias (pid,tablename,field_id,value_alias,value_id,lang,expire) SELECT pid,tablename,field_id,value_alias,value_id,lang,expire FROM tx_realurl_uniqalias_migration
+   # ... or insert alias back into realurl table (EXT:realurl version 1.x)
    INSERT INTO tx_realurl_uniqalias (tstamp,tablename,field_id,value_alias,value_id,lang,expire) SELECT tstamp,tablename,field_id,value_alias,value_id,lang,expire FROM tx_realurl_uniqalias_migration
+   # drop temporary table
+   DROP TABLE tx_realurl_uniqalias_migration;
 
 
 Not migrated
