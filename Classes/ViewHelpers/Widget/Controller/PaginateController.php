@@ -59,6 +59,8 @@ class PaginateController extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetCont
     protected $initialLimit = 0;
     /** @var int */
     protected $recordId = 0;
+    /** @var string */
+    protected $addQueryStringMethod = '';
 
     /**
      * Initialize the action and get correct configuration
@@ -91,6 +93,9 @@ class PaginateController extends \TYPO3\CMS\Fluid\Core\Widget\AbstractWidgetCont
         }
         if (isset($this->widgetConfiguration['initial']['recordId'])) {
             $this->recordId = (int)$this->widgetConfiguration['initial']['recordId'];
+        }
+        if (isset($this->widgetConfiguration['initial']['addQueryStringMethod'])) {
+            $this->configuration['addQueryStringMethod'] = (string)$this->widgetConfiguration['initial']['addQueryStringMethod'];
         }
     }
 
